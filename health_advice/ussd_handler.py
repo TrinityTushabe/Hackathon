@@ -1,13 +1,8 @@
 # health_advice/ussd_handler.py
-
-import africastalking
-from django.conf import settings
 from .models import USSDSession, HealthTip, FirstAidProcedure
+from django.http import  HttpResponse
 
 class USSDHandler:
-    def __init__(self):
-        africastalking.initialize(settings.AT_USERNAME, settings.AT_API_KEY)
-        self.ussd = africastalking.USSD
 
     def handle_request(self, session_id, phone_number, text):
         session, created = USSDSession.objects.get_or_create(
@@ -26,7 +21,7 @@ class USSDHandler:
         session.last_response = response
         session.save()
 
-        return self.ussd.send(response, session_id)
+        return  HttpResponse(response)
 
     def get_main_menu(self):
         return "CON Welcome to Health Advice USSD Service\n" \
